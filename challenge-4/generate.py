@@ -53,19 +53,16 @@ percent_progress = 0
 for i, path in enumerate(paths):
     if i % percent == 0:
         percent_progress += 10
-        print(f"{percent_progress}% complete")
+        if percent_progress <= 100:
+            print(f"{percent_progress}% complete")
     os.system(f"mkdir -p {path}")
 print("Directory creation complete.")
 
-flag_dir_depth = random.randint(3, 5)
 flag_dir = random.choice(paths)
-
-print("Generating flag...")
-flag_path = "/".join(flag_dir.split("/")[:flag_dir_depth])
 flag = uuid.uuid4()
 flag_contents = f"flag{{{flag}}}"
 
-os.system(f"echo {flag_contents} > {path}/flag.txt")
+os.system(f"echo {flag_contents} > {flag_dir}/flag.txt")
 
 print("Flag generated.")
 
