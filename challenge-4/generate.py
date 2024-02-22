@@ -1,6 +1,8 @@
+import hashlib
 import os
 import random
 import uuid
+from uuid import UUID # for function type hints
 
 
 depth = 5
@@ -45,6 +47,14 @@ def generate_paths(root: Dir) -> list[str]:
     return paths
 
 
+def hash_flag(flag: UUID) -> None:
+    bytestr = str(flag).encode("utf-8")
+    hashed = hashlib.sha256(bytestr).hexdigest()
+    fobj = open(".hash.txt", 'w')
+    fobj.write(f"{hashed}\n")
+    fobj.close()
+
+
 paths = generate_paths(root)
 
 print("Creating directories...")
@@ -63,7 +73,6 @@ flag = uuid.uuid4()
 flag_contents = f"flag{{{flag}}}"
 
 os.system(f"echo {flag_contents} > {flag_dir}/flag.txt")
+hash_flag(flag)
 
 print("Flag generated.")
-
-# TODO: Get hash of flag and output for the checker script
