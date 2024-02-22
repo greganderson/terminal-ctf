@@ -1,36 +1,42 @@
-import argparse
 import hashlib
-import sys
+import os
+
 
 def check_solution(flag: str) -> str:
     bytestr = flag.encode("utf-8")
     hashed = hashlib.sha256(bytestr).hexdigest()
     return hashed
 
+def get_challenge_input() -> int:
+    """ Helper function for finding out which challenge the user is testing their flag against """
+
+    # Get the number of challenges. If we decide to change how challenge folders are named, this will need to change as well.
+    files = os.listdir(".")
+    number_of_challenges = len([file for file in files if os.path.isdir(file) and file.startswith("challenge-")])
+
+    while True:
+        print("Which challenge are you checking:")
+        print()
+        for i in range(1, number_of_challenges+1):
+            print(f"{i}. Challenge {i}")
+        print()
+
+        try:
+            challenge = int(input("=> "))
+            if challenge > 0 and challenge <= number_of_challenges:
+                return challenge
+        except ValueError as e:
+            print(f"Invalid input, please enter a number between 1-{number_of_challenges}")
+
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("flag", help = "The flag you want to test")
-    parser.add_argument("-c", "--challenge", help = "The challenge you want to check the solution for")
+    target_challenge = get_challenge_input()
 
-    flag_hashes = {
-        '1': "486ea46224d1bb4fb680f34f7c9ad96a8f24ec88be73ea8e5a6c65260e9cb8a7",
-        '2': "4239f9001d16108ff224bcf0d0ec8f458234a5c7c2d6838150c3a203e21fa035",
-        '3': "7de8c4055cab88cc1111d6b101e8e17f2d2d2edaa96f961ffc131489eeb6d690",
-        '4': "./challenge-4/.hash.txt"
-    }
+    solution_hash_file_path = f"./challenge-{target_challenge}/.hash.txt"
+    with open(solution_hash_file_path, "r") as f:
+        solution = f.read().strip()
 
-    args = parser.parse_args()
-    if len(sys.argv) == 1:
-        parser.print_help()
-        return
-
-    solution = None
-    attempt = check_solution(args.flag)
-    if flag_hashes[args.challenge].startswith("./"):
-        fobj = open(flag_hashes[args.challenge])
-        solution = fobj.readlines()[0].strip()
-    else:
-        solution = flag_hashes[args.challenge]
+    input_flag = input("Enter the flag: ")
+    attempt = check_solution(input_flag)
 
     if solution == attempt:
         print("Correct! You found the right flag.")
