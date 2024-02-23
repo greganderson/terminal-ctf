@@ -2,7 +2,6 @@ import hashlib
 import os
 import random
 import uuid
-from uuid import UUID # for function type hints
 
 
 depth = 5
@@ -47,7 +46,7 @@ def generate_paths(root: Dir) -> list[str]:
     return paths
 
 
-def hash_flag(flag: UUID) -> None:
+def hash_flag(flag: uuid.UUID) -> None:
     bytestr = str(flag).encode("utf-8")
     hashed = hashlib.sha256(bytestr).hexdigest()
     fobj = open(".hash.txt", 'w')
