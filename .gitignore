@@ -1,4 +1,3 @@
 .env
 *.swp
 challenge-4/*/
-*/.hash.txt
