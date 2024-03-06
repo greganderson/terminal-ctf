@@ -1,7 +1,7 @@
 # Changing permissions
 
-If you run into issues and need to reset the challenge, run the reset.py file.
+The generate_flag.py file will create a flag.txt file. You will need to retrieve the flag from the text file
 
 ## Allowed commands
 
-* python, chmod
+* python, chmod, cat

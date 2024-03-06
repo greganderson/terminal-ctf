@@ -1,4 +1,5 @@
 import random
+import os
 
 alphabet = ".,?! \t\n\rabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -86,7 +87,12 @@ def main():
         tty.append(temp)
 
     r = dec(zsh, 0xD00D2BAD)
-    print("flag{" + str(r, "utf-8") + "}")
+    z = "flag{" + str(r, "utf-8") + "}"
+    print(type(z))
+    ft = open("flag.txt", "w")
+    ft.write(z)
+    ft.close()
+    os.chmod("flag.txt", 0)
 
 if __name__ == "__main__":
     main()
