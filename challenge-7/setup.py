@@ -24,6 +24,8 @@ man() {
     fobj.write("\n")
     fobj.write(preamble)
     fobj.write(touch_func)
+    fobj.write("\n")
+    fobj.write(man_func)
     fobj.write(end)
     fobj.close()
 
