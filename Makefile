@@ -1,7 +1,6 @@
 # Build
 build-ctf:
 	docker build -t terminal-ctf .
-	echo "Built terminal-ctf"
 
 # Run
 run-ctf:
