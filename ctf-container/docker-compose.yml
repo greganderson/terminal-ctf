@@ -1,0 +1,7 @@
+services:
+  ctf:
+    container_name: terminal-ctf
+    image: ctf-image
+    build: .
+    ports:
+      - "2222:22"
