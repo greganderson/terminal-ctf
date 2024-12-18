@@ -13,7 +13,7 @@ RUN yes | unminimize
 WORKDIR /ctf
 
 COPY ./challenges /ctf/challenges
-COPY ./solution/target/release/solution /usr/bin/solution
+COPY ./check/target/release/check /usr/bin/check
 
 COPY ./touch ./.tools/touch
 COPY ./touch.1 ./.tools/touch.1
