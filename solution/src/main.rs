@@ -21,8 +21,6 @@ struct Task {
 }
 
 fn main() {
-    println!("Hello, world!");
-
     let mut task_map: HashMap<&str, Task> = HashMap::new();
     task_map.insert(
         "1",
