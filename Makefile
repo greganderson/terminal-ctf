@@ -1,10 +1,10 @@
 # Build
-build-solution:
-	cargo build --release --manifest-path ./solution/Cargo.toml
+build-check:
+	cargo build --release --manifest-path ./check/Cargo.toml
 	# Remove debug symbols to make slightly smaller
-	strip solution/target/release/solution
+	strip check/target/release/check
 
-build-ctf: build-solution
+build-ctf: build-check
 	docker build -t terminal-ctf .
 
 # Run
