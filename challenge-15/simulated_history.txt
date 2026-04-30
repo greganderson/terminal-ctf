@@ -1,0 +1,7 @@
+  101  ls -la
+  102  cd src
+  103  npm install
+  104  export SECRET_TOKEN="flag{blast_from_the_past}"
+  105  git commit -m "update"
+  106  rm -rf tmp
+  107  exit
