@@ -1,0 +1,4 @@
+" Prevent shell escapes from vim (used in challenges where vim is allowed)
+set shell=/bin/false
+set noswapfile
+cnoremap <expr> ! getcmdtype() ==# ':' ? '<Nop>' : '!'
