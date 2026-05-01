@@ -2,7 +2,7 @@
 # Placed at /usr/local/bin/check inside the container.
 # Uses absolute paths internally so it works even with a restricted user PATH.
 
-CHALLENGE=$(basename "$PWD")
+CHALLENGE=$(/usr/bin/basename "$PWD")
 if [[ ! "$CHALLENGE" =~ ^challenge-[0-9]+$ ]]; then
     echo "Error: run 'check' from inside a challenge directory."
     exit 1

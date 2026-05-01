@@ -27,9 +27,10 @@ COPY --chown=ctf:ctf . /home/ctf/challenges
 # Build per-challenge symlink trees in /bins using the writable path
 RUN CHALLENGES_DIR=/home/ctf/challenges python3 /home/ctf/challenges/docker/setup_bins.py
 
-# Install the check command globally
+# Install the check and help commands globally
 COPY docker/check.sh /usr/local/bin/check
-RUN chmod +x /usr/local/bin/check
+COPY docker/help.sh /usr/local/bin/help
+RUN chmod +x /usr/local/bin/check /usr/local/bin/help
 
 # Install restricted vimrc (prevents :! shell escapes in vim challenges)
 RUN mkdir -p /etc/vim
