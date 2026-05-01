@@ -31,7 +31,7 @@ while true; do
     completed=()
     [[ -f "$COMPLETED_FILE" ]] && mapfile -t completed < "$COMPLETED_FILE"
 
-    echo "Select a challenge (1-$n_challenges):"
+    echo "Select a challenge (1-$n_challenges), or 0 to exit:"
     echo ""
     for i in $(seq 1 "$n_challenges"); do
         mark=""
@@ -40,12 +40,17 @@ while true; do
         done
         echo "  $i. Challenge $i$mark"
     done
+    echo "  0. Exit"
     echo ""
-    read -rp "=> " choice
+    read -rp "=> " choice || exit 0
+
+    if [[ "$choice" == "0" ]]; then
+        exit 0
+    fi
 
     if ! [[ "$choice" =~ ^[0-9]+$ ]] || (( choice < 1 || choice > n_challenges )); then
         echo ""
-        echo "Please enter a number between 1 and $n_challenges."
+        echo "Please enter a number between 0 and $n_challenges."
         read -rp "Press Enter to continue..." _ || true
         continue
     fi
@@ -63,7 +68,7 @@ while true; do
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "  Type 'cmds' to see available commands."
     echo "  Type 'check' when you have the flag."
-    echo "  Type 'exit' to return to the menu."
+    echo "  Press Ctrl+D to return to the menu."
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
 
