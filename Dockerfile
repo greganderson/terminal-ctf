@@ -29,8 +29,8 @@ RUN CHALLENGES_DIR=/home/ctf/challenges python3 /home/ctf/challenges/docker/setu
 
 # Install the check and help commands globally
 COPY docker/check.sh /usr/local/bin/check
-COPY docker/help.sh /usr/local/bin/help
-RUN chmod +x /usr/local/bin/check /usr/local/bin/help
+COPY docker/info.sh /usr/local/bin/info
+RUN chmod +x /usr/local/bin/check /usr/local/bin/info
 
 # Install restricted vimrc (prevents :! shell escapes in vim challenges)
 RUN mkdir -p /etc/vim
