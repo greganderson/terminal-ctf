@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
     grep \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache-dir --break-system-packages fastapi uvicorn
+RUN pip3 install --no-cache-dir --break-system-packages fastapi uvicorn && \
+    rm -f /usr/local/bin/uvicorn /usr/local/bin/fastapi
 
 # Create the CTF user
 RUN useradd -m -s /bin/bash ctf
@@ -29,8 +30,8 @@ RUN CHALLENGES_DIR=/home/ctf/challenges python3 /home/ctf/challenges/docker/setu
 
 # Install the check and help commands globally
 COPY docker/check.sh /usr/local/bin/check
-COPY docker/info.sh /usr/local/bin/info
-RUN chmod +x /usr/local/bin/check /usr/local/bin/info
+COPY docker/cmds.sh /usr/local/bin/cmds
+RUN chmod +x /usr/local/bin/check /usr/local/bin/cmds
 
 # Install restricted vimrc (prevents :! shell escapes in vim challenges)
 RUN mkdir -p /etc/vim

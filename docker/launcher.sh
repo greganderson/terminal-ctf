@@ -3,11 +3,18 @@ set -euo pipefail
 
 CHALLENGES_DIR="${CHALLENGES_DIR:-/challenges}"
 BINS_DIR="${BINS_DIR:-/bins}"
+COMPLETED_FILE="/home/ctf/.completed_challenges"
 
-n_challenges=$(ls -d "$CHALLENGES_DIR"/challenge-* 2>/dev/null | wc -l)
+challenge_dirs=( "$CHALLENGES_DIR"/challenge-* )
+if [[ ! -d "${challenge_dirs[0]}" ]]; then
+    echo "Error: no challenges found in $CHALLENGES_DIR"
+    exit 1
+fi
+n_challenges=${#challenge_dirs[@]}
 
-clear
-cat <<'BANNER'
+show_banner() {
+    clear
+    cat <<'BANNER'
   _____ ____ _____
  / ____|_  _|  ___|
 | |     | | | |_
@@ -16,58 +23,59 @@ cat <<'BANNER'
  \_____|___|_|    Terminal CTF
 
 BANNER
+}
 
 while true; do
+    show_banner
+
+    completed=()
+    [[ -f "$COMPLETED_FILE" ]] && mapfile -t completed < "$COMPLETED_FILE"
+
     echo "Select a challenge (1-$n_challenges):"
     echo ""
     for i in $(seq 1 "$n_challenges"); do
-        echo "  $i. Challenge $i"
+        mark=""
+        for c in "${completed[@]}"; do
+            [[ "$c" == "$i" ]] && mark=" ✓" && break
+        done
+        echo "  $i. Challenge $i$mark"
     done
     echo ""
     read -rp "=> " choice
 
-    if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= n_challenges )); then
-        break
+    if ! [[ "$choice" =~ ^[0-9]+$ ]] || (( choice < 1 || choice > n_challenges )); then
+        echo ""
+        echo "Please enter a number between 1 and $n_challenges."
+        read -rp "Press Enter to continue..." _ || true
+        continue
     fi
+
+    CHALLENGE_DIR="$CHALLENGES_DIR/challenge-$choice"
+    BINS_PATH="$BINS_DIR/challenge-$choice"
+
+    clear
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  Challenge $choice"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    echo "Please enter a number between 1 and $n_challenges."
+    cat "$CHALLENGE_DIR/instructions.md"
     echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  Type 'cmds' to see available commands."
+    echo "  Type 'check' when you have the flag."
+    echo "  Type 'exit' to return to the menu."
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+
+    SESSION_ENV=(
+        HOME="$CHALLENGE_DIR"
+        PATH="/usr/local/bin:$BINS_DIR/base:$BINS_PATH"
+        CHALLENGES_DIR="$CHALLENGES_DIR"
+    )
+    [[ "$choice" == "7" ]] && SESSION_ENV+=( MANPATH="$CHALLENGE_DIR/.tools" )
+    [[ -L "$BINS_PATH/vim" ]] && SESSION_ENV+=( VIMINIT="source /etc/vim/restricted_vimrc" )
+
+    # Drop into a restricted bash session; return here when user types 'exit'.
+    # --norc / --noprofile prevent startup files from adding extra commands.
+    (cd "$CHALLENGE_DIR" && env "${SESSION_ENV[@]}" /bin/bash --norc --noprofile) || true
 done
-
-CHALLENGE_DIR="$CHALLENGES_DIR/challenge-$choice"
-BINS_PATH="$BINS_DIR/challenge-$choice"
-
-clear
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  Challenge $choice"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-cat "$CHALLENGE_DIR/instructions.md"
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  Type 'info' to see available commands."
-echo "  Type 'check' when you have the flag."
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-
-# Build a minimal restricted PATH:
-#   - /usr/local/bin  → 'check' command
-#   - challenge bins  → only the allowed commands
-export PATH="/usr/local/bin:$BINS_DIR/base:$BINS_PATH"
-export HOME="$CHALLENGE_DIR"
-
-# challenge-7: custom man page lives in .tools/
-if [[ "$choice" == "7" ]]; then
-    export MANPATH="$CHALLENGE_DIR/.tools:${MANPATH:-}"
-fi
-
-# Prevent vim shell escapes for any challenge that has vim in its bins
-if [[ -L "$BINS_PATH/vim" ]]; then
-    export VIMINIT="source /etc/vim/restricted_vimrc"
-fi
-
-cd "$CHALLENGE_DIR"
-
-# Drop into a bash session with the restricted PATH.
-# --norc / --noprofile prevent the user's startup files from adding more commands.
-exec /bin/bash --norc --noprofile

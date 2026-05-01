@@ -1,19 +1,7 @@
 #!/bin/bash
-# Placed at /usr/local/bin/info inside the container.
+# Placed at /usr/local/bin/cmds inside the container.
 # Uses absolute paths internally so it works even with a restricted user PATH.
 
-CHALLENGE=$(/usr/bin/basename "$PWD")
-if [[ ! "$CHALLENGE" =~ ^challenge-[0-9]+$ ]]; then
-    /bin/echo "Error: run 'info' from inside a challenge directory."
-    exit 1
-fi
-
-/bin/echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-/bin/echo "  $CHALLENGE"
-/bin/echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-/bin/echo ""
-/bin/cat "$PWD/instructions.md"
-/bin/echo ""
 /bin/echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 /bin/echo "  Available commands"
 /bin/echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

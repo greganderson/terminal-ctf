@@ -20,8 +20,14 @@ stored=$(/bin/cat "$HASH_FILE")
 read -r flag
 attempt=$(printf '%s' "$flag" | /usr/bin/sha256sum | /usr/bin/cut -d' ' -f1)
 
+COMPLETED_FILE="/home/ctf/.completed_challenges"
+
 if [[ "$attempt" == "$stored" ]]; then
     echo "Correct! Well done."
+    challenge_num="${CHALLENGE#challenge-}"
+    if ! /usr/bin/grep -qx "$challenge_num" "$COMPLETED_FILE" 2>/dev/null; then
+        /bin/echo "$challenge_num" >> "$COMPLETED_FILE"
+    fi
 else
     echo "Incorrect. Keep trying!"
 fi
