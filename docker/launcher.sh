@@ -52,7 +52,7 @@ echo ""
 # Build a minimal restricted PATH:
 #   - /usr/local/bin  → 'check' command
 #   - challenge bins  → only the allowed commands
-export PATH="/usr/local/bin:$BINS_PATH"
+export PATH="/usr/local/bin:$BINS_DIR/base:$BINS_PATH"
 export HOME="$CHALLENGE_DIR"
 
 # challenge-7: custom man page lives in .tools/
@@ -69,4 +69,4 @@ cd "$CHALLENGE_DIR"
 
 # Drop into a bash session with the restricted PATH.
 # --norc / --noprofile prevent the user's startup files from adding more commands.
-exec bash --norc --noprofile
+exec /bin/bash --norc --noprofile
