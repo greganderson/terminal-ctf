@@ -1,9 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
 alphabet = ".,?! \t\n\rabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-app = FastAPI()
+class NewlineJSONResponse(JSONResponse):
+    def render(self, content) -> bytes:
+        return super().render(content) + b"\n"
+
+app = FastAPI(default_response_class=NewlineJSONResponse)
 
 def tobase10(n, alph):
     prod = 0
@@ -72,4 +77,9 @@ async def languages():
     return {"status": 418, "gpt": psuedo, "status": "online", "lang": ["Python", "Swift", "Kotlin", "arm64", "C", "Rust", "Go", "COBOL", "Haskell"], "flag": f, "distros": {"Ubuntu": 42, "Kubuntu": 16, "Mint": 7, "Kali": 1337, "Parrot": 9, "openSUSE": 2, "Arch": 1}}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host = "localhost", port = 8080)
+    import os, sys
+    pid = os.fork()
+    if pid > 0:
+        print(f"Server running in background on localhost:8080 (PID {pid})")
+        sys.exit(0)
+    uvicorn.run(app, host="localhost", port=8080)

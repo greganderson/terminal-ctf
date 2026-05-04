@@ -5,4 +5,4 @@ The flag will be located in `flag.txt`.
 
 ## Allowed Commands
 
-- python, find
+- python, find, cat

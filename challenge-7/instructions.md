@@ -5,7 +5,7 @@ Navigate out of the current challenge folder to use your system command.
 
 You will need to use the help command (`touch --help`) and read the man page to figure out how to get the flag.
 
-## Setup
+## Setup (only needed if not running Docker container)
 
 Run setup.py to start getting things set up. Once that is complete, you will need to source your .zshrc file (`source ~/.zshrc`).
 
@@ -20,4 +20,4 @@ There is a flag option that generates the flag when given the correct input.
 
 ## Allowed Commands
 
-- python, touch
+- python, touch, cat

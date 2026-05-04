@@ -81,7 +81,7 @@ def main():
     r = dec(zsh, 0xD00D2BAD)
     z = "flag{" + str(r, "utf-8") + "}"
     ft = open("flag.txt", "w")
-    ft.write(z)
+    ft.write(z + "\n")
     ft.close()
     os.chmod("flag.txt", 0)
 
