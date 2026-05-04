@@ -3,23 +3,23 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN rm -f /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/docker-clean
+RUN apt-get update
 
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update \
-    && apt-get install -y --no-install-recommends \
-        vim curl less python3 python3-pip man-db groff coreutils findutils grep \
-    && cd /tmp \
-    && apt-get download bash coreutils grep findutils \
-    && for deb in /tmp/*.deb; do \
-        dpkg-deb --fsys-tarfile "$deb" | tar -xC /; \
-       done \
-    && rm -f /tmp/*.deb \
-    && mandb
+RUN apt-get install -y \
+    bash \
+    vim \
+    curl \
+    python3 \
+    python3-pip \
+    man-db \
+    manpages \
+    coreutils \
+    findutils \
+    grep \
+    && rm -rf /var/lib/apt/lists/* && mandb
 
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip3 install --break-system-packages fastapi uvicorn \
-    && rm -f /usr/local/bin/uvicorn /usr/local/bin/fastapi
+RUN pip3 install --no-cache-dir --break-system-packages fastapi uvicorn && \
+    rm -f /usr/local/bin/uvicorn /usr/local/bin/fastapi
 
 RUN useradd -m -s /bin/bash ctf
 
