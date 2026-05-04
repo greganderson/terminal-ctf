@@ -22,7 +22,7 @@ SKIP = {">", "<", ">>", "|", "&", "source", "echo", "cd"}
 
 # Always available regardless of challenge restrictions
 BASE_COMMANDS = ["ls", "pwd", "man", "clear", "whoami", "id", "python", "mkdir", "chmod",
-                 "nroff", "tbl", "groff", "grotty", "troff"]
+                 "nroff", "tbl", "groff", "grotty", "troff", "less", "cat"]
 
 # challenge-7 has no "Allowed commands" section; define them manually
 MANUAL_COMMANDS = {

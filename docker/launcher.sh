@@ -76,6 +76,7 @@ while true; do
         HOME="$CHALLENGE_DIR"
         PATH="/usr/local/bin:$BINS_DIR/base:$BINS_PATH"
         CHALLENGES_DIR="$CHALLENGES_DIR"
+        MANPATH="/usr/share/man:/usr/local/share/man"
     )
     [[ "$choice" == "7" ]] && SESSION_ENV+=( MANPATH="$CHALLENGE_DIR/.tools" )
     [[ -L "$BINS_PATH/vim" ]] && SESSION_ENV+=( VIMINIT="source /etc/vim/restricted_vimrc" )
