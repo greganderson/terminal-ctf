@@ -2,3 +2,8 @@
 set shell=/bin/false
 set noswapfile
 cnoremap <expr> ! getcmdtype() ==# ':' ? '<Nop>' : '!'
+
+syntax on
+set hlsearch
+set incsearch
+set cursorline

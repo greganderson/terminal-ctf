@@ -1,10 +1,11 @@
 # History
 
-The terminal keeps track of the commands you've run. Usually, you can see them by typing `history`. 
+The terminal keeps track of every command you run. You can view your command history with `history`.
 
-In this challenge, we've provided a file called `simulated_history.txt` that represents a developer's recent command history. One of the commands contains the flag. Find it!
+A developer left their session history behind. One of the commands they ran contains the flag — but there are a lot of commands to scroll through. Use `grep` to search the output of `history` and find it.
 
 ## Allowed commands:
 
-* cat
-* grep
+- history
+- grep
+- |

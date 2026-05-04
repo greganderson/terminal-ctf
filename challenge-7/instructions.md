@@ -9,7 +9,7 @@ You will need to use the help command (`touch --help`) and read the man page to 
 
 Run setup.py to start getting things set up. Once that is complete, you will need to source your .zshrc file (`source ~/.zshrc`).
 
-## Takedown
+## Takedown (only needed if not running Docker container)
 
 Run `unfunction touch` to remove the function from your shell environment. Edit your .zshrc file and remove all the function text within the asterisk sections (\***\*\*\*\*\***CTF SETUP\***\*\*\*\*\***)
 Source your .zshrc file again and you should be back to the state you were in before the challenge.
@@ -20,4 +20,4 @@ There is a flag option that generates the flag when given the correct input.
 
 ## Allowed Commands
 
-- touch, man
+- python, touch

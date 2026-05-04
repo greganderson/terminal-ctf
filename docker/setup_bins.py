@@ -21,7 +21,7 @@ COMMAND_ALIASES = {
 SKIP = {">", "<", ">>", "|", "&", "source", "echo", "cd"}
 
 # Always available regardless of challenge restrictions
-BASE_COMMANDS = ["ls", "pwd", "man", "clear", "whoami", "id"]
+BASE_COMMANDS = ["ls", "pwd", "man", "clear", "whoami", "id", "python", "mkdir", "chmod"]
 
 # challenge-7 has no "Allowed commands" section; define them manually
 MANUAL_COMMANDS = {
@@ -58,7 +58,8 @@ def parse_allowed_commands(path: Path) -> list[str]:
 base_path = BINS_DIR / "base"
 base_path.mkdir(parents=True, exist_ok=True)
 for cmd in BASE_COMMANDS:
-    binary = which(cmd)
+    resolved_cmd = COMMAND_ALIASES.get(cmd, cmd)
+    binary = which(resolved_cmd)
     if binary:
         link = base_path / cmd
         if not link.exists():
