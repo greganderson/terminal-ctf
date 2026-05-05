@@ -18,6 +18,8 @@ RUN apt-get install -y \
     coreutils \
     findutils \
     grep \
+    tealdeer \
+    unzip \
     && apt-get install --reinstall -y coreutils findutils \
     && rm -rf /var/lib/apt/lists/*
 
@@ -47,6 +49,9 @@ ENV CHALLENGES_DIR=/home/ctf/challenges
 ENV BINS_DIR=/bins
 
 EXPOSE 8080
+
+
+RUN tldr --update
 
 USER ctf
 WORKDIR /home/ctf

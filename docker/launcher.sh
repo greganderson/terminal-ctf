@@ -74,9 +74,11 @@ while true; do
 
     SESSION_ENV=(
         HOME="$CHALLENGE_DIR"
+        XDG_CACHE_HOME="/home/ctf/.cache"
         PATH="/usr/local/bin:$BINS_DIR/base:$BINS_PATH"
         CHALLENGES_DIR="$CHALLENGES_DIR"
         MANPATH="/usr/share/man:/usr/local/share/man"
+        # MANPAGER="less"
     )
     [[ "$choice" == "7" ]] && SESSION_ENV+=( MANPATH="$CHALLENGE_DIR/.tools:/usr/share/man:/usr/local/share/man" )
     [[ -L "$BINS_PATH/vim" ]] && SESSION_ENV+=( VIMINIT="source /etc/vim/restricted_vimrc" )
