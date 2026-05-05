@@ -18,14 +18,13 @@ RUN apt-get install -y \
     coreutils \
     findutils \
     grep \
-    tealdeer \
     unzip \
     && apt-get install --reinstall -y coreutils findutils \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mandb
 
-RUN pip3 install --no-cache-dir --break-system-packages fastapi uvicorn && \
+RUN pip3 install --no-cache-dir --break-system-packages fastapi uvicorn tldr && \
     rm -f /usr/local/bin/uvicorn /usr/local/bin/fastapi
 
 RUN useradd -m -s /bin/bash ctf
@@ -49,7 +48,6 @@ ENV CHALLENGES_DIR=/home/ctf/challenges
 ENV BINS_DIR=/bins
 
 EXPOSE 8080
-
 
 RUN tldr --update
 
