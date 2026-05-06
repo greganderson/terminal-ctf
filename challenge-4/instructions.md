@@ -1,8 +1,7 @@
-# Finding a file
+# Changing permissions
 
-Run the `generate.py` script to get started.
-The flag will be located in `flag.txt`.
+The `generate_flag.py` file will create a flag.txt file. You will need to retrieve the flag from the text file
 
-## Allowed Commands
+## Allowed commands
 
-- python, find, cat
+- python, chmod, cat

@@ -1,14 +1,17 @@
-# curl API
+# Environment Variables
 
-Run the server.py file to start the web server. There are a few different endpoints you'll need to check for the flag. Use curl to check each endpoint.
+Environment variables are dynamic-named values that can affect the way running processes will behave on a computer. You can see all environment variables using the `printenv` command, or see a specific one using `echo $VARIABLE_NAME`.
 
-## Endpoints
+To start this challenge, you first need to "source" the setup script to load the variable into your current shell:
 
-- localhost:8080
-- localhost:8080/flag
-- localhost:8080/classes
-- localhost:8080/languages
+```bash
+source setup.sh
+```
 
-## Allowed commands
+Then, find the value of the environment variable named `FLAG_NINE`.
 
-- python, curl
+## Allowed commands:
+
+* source
+* printenv
+* echo

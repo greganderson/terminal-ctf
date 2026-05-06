@@ -1,7 +1,11 @@
-# Changing permissions
+# Redirection
 
-The `generate_flag.py` file will create a flag.txt file. You will need to retrieve the flag from the text file
+You can save the output of a command to a file using the redirection operator (`>`). For example, `ls > files.txt` saves the list of files into `files.txt`.
 
-## Allowed commands
+There is a script here called `generator.py`. When you run it with `python3 generator.py`, it prints some text. Capture that output into a file called `output.txt` and find the flag.
 
-- python, chmod, cat
+## Allowed commands:
+
+* python3
+* cat
+* >

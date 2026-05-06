@@ -21,4 +21,4 @@ Say we were looking for 0561 0d00. The flag you'd give is 0000030.
 
 ## Allowed commands
 
-* grep
+* vim

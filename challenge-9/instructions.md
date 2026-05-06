@@ -1,17 +1,11 @@
-# Environment Variables
+# History
 
-Environment variables are dynamic-named values that can affect the way running processes will behave on a computer. You can see all environment variables using the `printenv` command, or see a specific one using `echo $VARIABLE_NAME`.
+The terminal keeps track of every command you run. You can view your command history with `history`.
 
-To start this challenge, you first need to "source" the setup script to load the variable into your current shell:
-
-```bash
-source setup.sh
-```
-
-Then, find the value of the environment variable named `FLAG_NINE`.
+A developer left their session history behind. One of the commands they ran contains the flag. Use `grep` to search the output of `history` and find it.
 
 ## Allowed commands:
 
-* source
-* printenv
-* echo
+- history
+- grep
+- |

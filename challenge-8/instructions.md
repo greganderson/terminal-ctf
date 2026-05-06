@@ -1,10 +1,10 @@
-# Hidden Files
+# Wildcard Search
 
-In the terminal, files that start with a dot (.) are considered "hidden". They don't show up with a regular `ls` command.
+You can use the asterisk (`*`) as a wildcard to represent any number of characters in a filename.
 
-Your goal is to find the hidden flag file in this directory and read its contents.
+There are 50 files in this directory. One of them contains the flag.
 
 ## Allowed commands:
 
-* ls
-* cat
+- grep
+- ls

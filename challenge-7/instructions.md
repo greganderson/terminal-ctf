@@ -1,23 +1,14 @@
-# man pages
+# curl API
 
-This challenge uses a customized `touch` command. While you are in the challenge-7 directory, any `touch X` will be redirected to the custom binary.
-Navigate out of the current challenge folder to use your system command.
+Run the server.py file to start the web server. There are a few different endpoints you'll need to check for the flag. Use curl to check each endpoint.
 
-You will need to use the help command (`touch --help`) and read the man page to figure out how to get the flag.
+## Endpoints
 
-## Setup (only needed if not running Docker container)
+- localhost:8080
+- localhost:8080/flag
+- localhost:8080/classes
+- localhost:8080/languages
 
-Run setup.py to start getting things set up. Once that is complete, you will need to source your .zshrc file (`source ~/.zshrc`).
+## Allowed commands
 
-## Takedown (only needed if not running Docker container)
-
-Run `unfunction touch` to remove the function from your shell environment. Edit your .zshrc file and remove all the function text within the asterisk sections (\***\*\*\*\*\***CTF SETUP\***\*\*\*\*\***)
-Source your .zshrc file again and you should be back to the state you were in before the challenge.
-
-## Hint
-
-There is a flag option that generates the flag when given the correct input.
-
-## Allowed Commands
-
-- python, touch, cat
+- python, curl
