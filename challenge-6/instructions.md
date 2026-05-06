@@ -4,11 +4,11 @@ Run the server.py file to start the web server. There are a few different endpoi
 
 ## Endpoints
 
-* localhost:8080
-* localhost:8080/flag
-* localhost:8080/classes
-* loclahost:8080/languages
+- localhost:8080
+- localhost:8080/flag
+- localhost:8080/classes
+- localhost:8080/languages
 
 ## Allowed commands
 
-* python, curl
+- python, curl
