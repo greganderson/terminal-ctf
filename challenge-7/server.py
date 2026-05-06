@@ -63,7 +63,7 @@ async def flag():
 
 @app.get("/classes")
 async def classes():
-    classes = ["Full Stack Development", "Digital Design", "IT", "Drafting & Design", "Culinary", "EMT", "Phlebotomy", "App Development", "Welding"]
+    classes = ["Software Development", "Digital Design", "IT", "Drafting & Design", "Culinary", "EMT", "Phlebotomy", "App Development", "Welding"]
     return {"count": len(classes), "classes": classes}
 
 @app.get("/languages")
