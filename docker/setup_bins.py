@@ -22,12 +22,19 @@ SKIP = {">", "<", ">>", "|", "&", "source", "echo", "cd"}
 
 # Always available regardless of challenge restrictions
 BASE_COMMANDS = ["ls", "pwd", "man", "clear", "whoami", "id", "python", "mkdir", "chmod",
-                 "nroff", "neqn", "tbl", "groff", "grotty", "troff", "cat", "tldr", "curl", "unzip", "rm"]
+                 "nroff", "neqn", "tbl", "groff", "grotty", "troff", "cat", "tldr", "curl",
+                 "unzip", "rm", "bash"]
 
-# challenge-7 has no "Allowed commands" section; define them manually
-MANUAL_COMMANDS = {
+# Override the auto-parsed visible command list for a specific challenge.
+# Use this when instructions.md has no "Allowed commands" section or when
+# you need to manually control exactly what students see.
+VISIBLE_OVERRIDES: dict[str, list[str]] = {
     "7": ["touch", "man", "ls", "cat"],
 }
+
+# Commands needed by challenge scripts but NOT shown to students.
+# These get symlinked into every challenge bins dir but never listed by `cmds`.
+HIDDEN_COMMANDS = ["sleep", "sha256sum", "awk", "dirname"]
 
 
 def which(cmd: str) -> str | None:
@@ -78,12 +85,15 @@ for challenge_dir in sorted(CHALLENGES_DIR.glob("challenge-*")):
     bins_path = BINS_DIR / f"challenge-{n}"
     bins_path.mkdir(parents=True, exist_ok=True)
 
-    commands = MANUAL_COMMANDS.get(n) or parse_allowed_commands(instructions)
+    commands = VISIBLE_OVERRIDES.get(n) or parse_allowed_commands(instructions)
     print(f"challenge-{n}: {commands}")
 
+    visible: list[str] = []
     for cmd in commands:
+        visible.append(cmd)  # always shown to students, even if it's a builtin
+
         if cmd in SKIP:
-            continue
+            continue  # shell builtin/operator — no binary to symlink
 
         # challenge-7 touch uses the local custom binary
         if cmd == "touch" and n == "7":
@@ -103,6 +113,19 @@ for challenge_dir in sorted(CHALLENGES_DIR.glob("challenge-*")):
                 link.symlink_to(binary)
             print(f"  {cmd} -> {binary}")
         else:
-            print(f"  WARNING: '{cmd}' not found in PATH, skipping")
+            print(f"  WARNING: '{cmd}' not found in PATH, skipping symlink")
+
+    (bins_path / ".visible").write_text("\n".join(visible) + "\n")
+
+    for cmd in HIDDEN_COMMANDS:
+        resolved_cmd = COMMAND_ALIASES.get(cmd, cmd)
+        binary = which(resolved_cmd)
+        if binary:
+            link = bins_path / cmd
+            if not link.exists():
+                link.symlink_to(binary)
+            print(f"  {cmd} -> {binary} (hidden)")
+        else:
+            print(f"  WARNING: hidden '{cmd}' not found in PATH, skipping")
 
 print("\nBin directories created successfully.")

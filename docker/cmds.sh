@@ -6,15 +6,20 @@
 /bin/echo "  Available commands"
 /bin/echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-cmds=()
-IFS=: read -ra path_dirs <<< "$PATH"
-for dir in "${path_dirs[@]}"; do
-    [[ -d "$dir" ]] || continue
-    for f in "$dir"/*; do
-        [[ -x "$f" ]] && cmds+=("$(/usr/bin/basename "$f")")
+if [[ -n "${CTF_BINS_PATH:-}" && -f "$CTF_BINS_PATH/.visible" ]]; then
+    while IFS= read -r cmd; do
+        [[ -n "$cmd" ]] && /bin/echo "  $cmd"
+    done < "$CTF_BINS_PATH/.visible"
+else
+    cmds=()
+    IFS=: read -ra path_dirs <<< "$PATH"
+    for dir in "${path_dirs[@]}"; do
+        [[ -d "$dir" ]] || continue
+        for f in "$dir"/*; do
+            [[ -x "$f" ]] && cmds+=("$(/usr/bin/basename "$f")")
+        done
     done
-done
-
-printf '%s\n' "${cmds[@]}" | /usr/bin/sort -u | while read -r cmd; do
-    /bin/echo "  $cmd"
-done
+    printf '%s\n' "${cmds[@]}" | /usr/bin/sort -u | while read -r cmd; do
+        /bin/echo "  $cmd"
+    done
+fi

@@ -76,6 +76,7 @@ while true; do
         HOME="$CHALLENGE_DIR"
         XDG_CACHE_HOME="/home/ctf/.cache"
         PATH="/usr/local/bin:$BINS_DIR/base:$BINS_PATH"
+        CTF_BINS_PATH="$BINS_PATH"
         CHALLENGES_DIR="$CHALLENGES_DIR"
         MANPATH="/usr/share/man:/usr/local/share/man"
         # MANPAGER="less"
