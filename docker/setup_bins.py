@@ -4,6 +4,7 @@ Parses each challenge's instructions.md to find allowed commands,
 then creates /bins/challenge-N/ with symlinks to those binaries only.
 Run once at image build time.
 """
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -24,10 +25,9 @@ BASE_COMMANDS = ["ls", "pwd", "man", "clear", "whoami", "id", "python", "mkdir",
                  "cat", "tldr", "curl", "rm", "bash"]
 
 # Override the auto-parsed visible command list for a specific challenge.
-# Use this when instructions.md has no "Allowed commands" section or when
-# you need to manually control exactly what students see.
+# Keyed by challenge directory name (e.g. "challenge-man").
 VISIBLE_OVERRIDES: dict[str, list[str]] = {
-    "7": ["touch", "man", "ls", "cat"],
+    "challenge-man": ["touch", "man", "ls", "cat"],
 }
 
 # Commands needed by challenge scripts but NOT shown to students.
@@ -61,6 +61,38 @@ def parse_allowed_commands(path: Path) -> list[str]:
     return commands
 
 
+def load_ordered_challenges() -> list[tuple[int, Path]]:
+    """Return (1-based index, challenge dir) pairs in challenge_order.json order."""
+    order_file = CHALLENGES_DIR / "challenge_order.json"
+    if not order_file.exists():
+        # Fall back to sorted directory order
+        dirs = sorted(d for d in CHALLENGES_DIR.glob("challenge-*") if d.is_dir())
+        return [(i, d) for i, d in enumerate(dirs, 1)]
+
+    order = json.loads(order_file.read_text())["order"]
+    uuid_map: dict[str, Path] = {}
+    for d in CHALLENGES_DIR.glob("challenge-*"):
+        if d.is_dir():
+            id_file = d / ".id"
+            if id_file.exists():
+                uuid_map[id_file.read_text().strip()] = d
+
+    result: list[tuple[int, Path]] = []
+    seen: set[str] = set()
+    for uid in order:
+        if uid in uuid_map:
+            d = uuid_map[uid]
+            result.append((len(result) + 1, d))
+            seen.add(d.name)
+
+    # Append any challenge dirs not covered by the order file
+    for d in sorted(CHALLENGES_DIR.glob("challenge-*")):
+        if d.is_dir() and d.name not in seen and (d / "instructions.md").exists():
+            result.append((len(result) + 1, d))
+
+    return result
+
+
 base_path = BINS_DIR / "base"
 base_path.mkdir(parents=True, exist_ok=True)
 for cmd in BASE_COMMANDS:
@@ -74,17 +106,16 @@ for cmd in BASE_COMMANDS:
     else:
         print(f"WARNING: base command '{cmd}' not found in PATH, skipping")
 
-for challenge_dir in sorted(CHALLENGES_DIR.glob("challenge-*")):
+for i, challenge_dir in load_ordered_challenges():
     instructions = challenge_dir / "instructions.md"
     if not instructions.exists():
         continue
 
-    n = challenge_dir.name.split("-")[1]
-    bins_path = BINS_DIR / f"challenge-{n}"
+    bins_path = BINS_DIR / f"challenge-{i}"
     bins_path.mkdir(parents=True, exist_ok=True)
 
-    commands = VISIBLE_OVERRIDES.get(n) or parse_allowed_commands(instructions)
-    print(f"challenge-{n}: {commands}")
+    commands = VISIBLE_OVERRIDES.get(challenge_dir.name) or parse_allowed_commands(instructions)
+    print(f"challenge-{i} ({challenge_dir.name}): {commands}")
 
     visible: list[str] = []
     for cmd in commands:
@@ -93,8 +124,8 @@ for challenge_dir in sorted(CHALLENGES_DIR.glob("challenge-*")):
         if cmd in SKIP:
             continue  # shell builtin/operator — no binary to symlink
 
-        # challenge-7 touch uses the local custom binary
-        if cmd == "touch" and n == "7":
+        # challenge-man touch uses the local custom binary
+        if cmd == "touch" and challenge_dir.name == "challenge-man":
             custom = challenge_dir / ".tools" / "touch"
             if custom.exists():
                 link = bins_path / "touch"

@@ -3,7 +3,7 @@
 # Uses absolute paths internally so it works even with a restricted user PATH.
 
 CHALLENGE=$(/usr/bin/basename "$PWD")
-if [[ ! "$CHALLENGE" =~ ^challenge-[0-9]+$ ]]; then
+if [[ ! "$CHALLENGE" =~ ^challenge- ]]; then
     echo "Error: run 'check' from inside a challenge directory."
     exit 1
 fi
@@ -24,9 +24,8 @@ COMPLETED_FILE="/home/ctf/.completed_challenges"
 
 if [[ "$attempt" == "$stored" ]]; then
     echo "Correct! Well done."
-    challenge_num="${CHALLENGE#challenge-}"
-    if ! /usr/bin/grep -qx "$challenge_num" "$COMPLETED_FILE" 2>/dev/null; then
-        /bin/echo "$challenge_num" >> "$COMPLETED_FILE"
+    if ! /usr/bin/grep -qx "$CHALLENGE" "$COMPLETED_FILE" 2>/dev/null; then
+        /bin/echo "$CHALLENGE" >> "$COMPLETED_FILE"
     fi
 else
     echo "Incorrect. Keep trying!"
