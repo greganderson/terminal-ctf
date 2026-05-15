@@ -1,38 +1,59 @@
 import hashlib
-import os
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).parent
+ORDER_FILE = ROOT / "challenge_order.json"
 
 
 def check_solution(flag: str) -> str:
-    bytestr = flag.encode("utf-8")
-    hashed = hashlib.sha256(bytestr).hexdigest()
-    return hashed
+    return hashlib.sha256(flag.encode("utf-8")).hexdigest()
 
-def get_challenge_input() -> int:
-    """ Helper function for finding out which challenge the user is testing their flag against """
 
-    # Get the number of challenges. If we decide to change how challenge folders are named, this will need to change as well.
-    files = os.listdir(".")
-    number_of_challenges = len([file for file in files if os.path.isdir(file) and file.startswith("challenge-")])
+def load_uuid_map() -> dict[str, Path]:
+    mapping = {}
+    for d in ROOT.glob("challenge-*"):
+        if d.is_dir():
+            id_file = d / ".id"
+            if id_file.exists():
+                mapping[id_file.read_text().strip()] = d
+    return mapping
 
+
+def load_ordered_challenges() -> list[tuple[int, Path]]:
+    order = json.loads(ORDER_FILE.read_text())["order"]
+    uuid_map = load_uuid_map()
+    result = []
+    for i, uid in enumerate(order, 1):
+        if uid in uuid_map:
+            result.append((i, uuid_map[uid]))
+    return result
+
+
+def get_challenge_input(challenges: list[tuple[int, Path]]) -> Path:
     while True:
-        print("Which challenge are you checking:")
+        print("Which challenge are you checking:\n")
+        for num, path in challenges:
+            print(f"{num}. {path.name}")
         print()
-        for i in range(1, number_of_challenges+1):
-            print(f"{i}. Challenge {i}")
-        print()
-
         try:
-            challenge = int(input("=> "))
-            if challenge > 0 and challenge <= number_of_challenges:
-                return challenge
-        except ValueError as e:
-            print(f"Invalid input, please enter a number between 1-{number_of_challenges}")
+            choice = int(input("=> "))
+            if 1 <= choice <= len(challenges):
+                return challenges[choice - 1][1]
+        except ValueError:
+            pass
+        print(f"Invalid input, please enter a number between 1-{len(challenges)}")
+
 
 def main() -> None:
-    target_challenge = get_challenge_input()
+    challenges = load_ordered_challenges()
+    if not challenges:
+        print("No challenges found.")
+        return
 
-    solution_hash_file_path = f"./challenge-{target_challenge}/.hash.txt"
-    with open(solution_hash_file_path, "r") as f:
+    challenge_path = get_challenge_input(challenges)
+
+    with open(challenge_path / ".hash.txt") as f:
         solution = f.read().strip()
 
     input_flag = input("Enter the flag: ")
@@ -42,6 +63,7 @@ def main() -> None:
         print("Correct! You found the right flag.")
     else:
         print("Incorrect. Please try again.")
+
 
 if __name__ == "__main__":
     main()
