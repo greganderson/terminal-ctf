@@ -17,13 +17,11 @@ COMMAND_ALIASES = {
     "python": "python3",
 }
 
-# Shell operators / builtins — not real binaries, always available in bash
 SKIP = {">", "<", ">>", "|", "&", "source", "echo", "cd"}
 
 # Always available regardless of challenge restrictions
 BASE_COMMANDS = ["ls", "pwd", "man", "clear", "whoami", "id", "python", "mkdir", "chmod",
-                 "nroff", "neqn", "tbl", "groff", "grotty", "troff", "cat", "tldr", "curl",
-                 "unzip", "rm", "bash"]
+                 "cat", "tldr", "curl", "rm", "bash"]
 
 # Override the auto-parsed visible command list for a specific challenge.
 # Use this when instructions.md has no "Allowed commands" section or when
@@ -33,8 +31,8 @@ VISIBLE_OVERRIDES: dict[str, list[str]] = {
 }
 
 # Commands needed by challenge scripts but NOT shown to students.
-# These get symlinked into every challenge bins dir but never listed by `cmds`.
-HIDDEN_COMMANDS = ["sleep", "sha256sum", "awk", "dirname"]
+HIDDEN_COMMANDS = ["sleep", "sha256sum", "awk", "dirname", "nroff", "neqn", "tbl", "groff",
+                   "grotty", "troff", "unzip"]
 
 
 def which(cmd: str) -> str | None:
@@ -90,7 +88,7 @@ for challenge_dir in sorted(CHALLENGES_DIR.glob("challenge-*")):
 
     visible: list[str] = []
     for cmd in commands:
-        visible.append(cmd)  # always shown to students, even if it's a builtin
+        visible.append(cmd)
 
         if cmd in SKIP:
             continue  # shell builtin/operator — no binary to symlink

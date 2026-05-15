@@ -4,3 +4,10 @@ __pycache__
 *.pyo
 .DS_Store
 *.egg-info
+CLAUDE.md
+GEMINI.md
+OVERVIEW.md
+TODO.md
+README.md
+generate_challenges.py
+solution.py

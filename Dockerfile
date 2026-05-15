@@ -2,8 +2,8 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN rm -f /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/docker-clean
-RUN apt-get update && yes | unminimize
+RUN rm -f /etc/dpkg/dpkg.cfg.d/excludes /etc/dpkg/dpkg.cfg.d/docker-clean \
+    && apt-get update && yes | unminimize
 
 RUN apt-get install -y \
     bash \
@@ -19,6 +19,7 @@ RUN apt-get install -y \
     findutils \
     grep \
     unzip \
+    # reinstall restores man pages stripped by the docker-clean config
     && apt-get install --reinstall -y coreutils findutils \
     && rm -rf /var/lib/apt/lists/*
 
@@ -47,10 +48,7 @@ RUN chmod +x /usr/local/bin/launcher
 ENV CHALLENGES_DIR=/home/ctf/challenges
 ENV BINS_DIR=/bins
 
-EXPOSE 8080
-
-RUN tldr --update
-
 USER ctf
 WORKDIR /home/ctf
+RUN tldr --update
 CMD ["/usr/local/bin/launcher"]

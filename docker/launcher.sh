@@ -28,16 +28,11 @@ BANNER
 while true; do
     show_banner
 
-    completed=()
-    [[ -f "$COMPLETED_FILE" ]] && mapfile -t completed < "$COMPLETED_FILE"
-
     echo "Select a challenge (1-$n_challenges), or 0 to exit:"
     echo ""
     for i in $(seq 1 "$n_challenges"); do
         mark=""
-        for c in "${completed[@]}"; do
-            [[ "$c" == "$i" ]] && mark=" ✓" && break
-        done
+        [[ -f "$COMPLETED_FILE" ]] && /usr/bin/grep -Fxq "$i" "$COMPLETED_FILE" && mark=" ✓"
         echo "  $i. Challenge $i$mark"
     done
     echo "  0. Exit"
@@ -79,7 +74,6 @@ while true; do
         CTF_BINS_PATH="$BINS_PATH"
         CHALLENGES_DIR="$CHALLENGES_DIR"
         MANPATH="/usr/share/man:/usr/local/share/man"
-        # MANPAGER="less"
     )
     [[ "$choice" == "7" ]] && SESSION_ENV+=( MANPATH="$CHALLENGE_DIR/.tools:/usr/share/man:/usr/local/share/man" )
     [[ -L "$BINS_PATH/vim" ]] && SESSION_ENV+=( VIMINIT="source /etc/vim/restricted_vimrc" )
