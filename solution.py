@@ -16,7 +16,8 @@ def load_uuid_map() -> dict[str, Path]:
         if d.is_dir():
             id_file = d / ".id"
             if id_file.exists():
-                mapping[id_file.read_text().strip()] = d
+                data = json.loads(id_file.read_text())
+                mapping[data["uuid"]] = d
     return mapping
 
 

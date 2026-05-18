@@ -5,8 +5,8 @@ CHALLENGES_DIR="${CHALLENGES_DIR:-/challenges}"
 BINS_DIR="${BINS_DIR:-/bins}"
 COMPLETED_FILE="/home/ctf/.completed_challenges"
 
-# Build ordered list of challenge directories from challenge_order.json + .id files
-mapfile -t challenge_dirs < <(python3 -c "
+# Build ordered list of challenge directories + category tags from challenge_order.json + .id files
+mapfile -t challenge_entries < <(python3 -c "
 import json, os, sys
 challenges_dir = os.environ.get('CHALLENGES_DIR', '/challenges')
 order_file = os.path.join(challenges_dir, 'challenge_order.json')
@@ -19,13 +19,23 @@ try:
             id_file = os.path.join(entry.path, '.id')
             if os.path.exists(id_file):
                 with open(id_file) as f2:
-                    uuid_map[f2.read().strip()] = entry.path
+                    data = json.loads(f2.read().strip())
+                    cats = ', '.join(data.get('categories', []))
+                    uuid_map[data['uuid']] = (entry.path, cats)
     for uid in order:
         if uid in uuid_map:
-            print(uuid_map[uid])
+            path, cats = uuid_map[uid]
+            print(f'{cats}|{path}')
 except Exception as e:
     print(str(e), file=sys.stderr)
 ")
+
+challenge_dirs=()
+challenge_tags=()
+for entry in "${challenge_entries[@]}"; do
+    challenge_tags+=("${entry%%|*}")
+    challenge_dirs+=("${entry#*|}")
+done
 
 if [[ ${#challenge_dirs[@]} -eq 0 ]]; then
     echo "Error: no challenges found in $CHALLENGES_DIR"
@@ -53,10 +63,12 @@ while true; do
     echo ""
     for i in $(seq 1 "$n_challenges"); do
         mark=""
+        tags="${challenge_tags[$((i-1))]}"
         challenge_name="$(basename "${challenge_dirs[$((i-1))]}")"
         [[ -f "$COMPLETED_FILE" ]] && /usr/bin/grep -Fxq "$challenge_name" "$COMPLETED_FILE" && mark=" ✓"
-        echo "  $i. Challenge $i$mark"
+        echo "  $i. Challenge $i  [$tags]$mark"
     done
+    echo ""
     echo "  0. Exit"
     echo ""
     read -rp "=> " choice || exit 0
