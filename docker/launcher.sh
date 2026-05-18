@@ -66,7 +66,9 @@ while true; do
         tags="${challenge_tags[$((i-1))]}"
         challenge_name="$(basename "${challenge_dirs[$((i-1))]}")"
         [[ -f "$COMPLETED_FILE" ]] && /usr/bin/grep -Fxq "$challenge_name" "$COMPLETED_FILE" && mark=" ✓"
-        echo "  $i. Challenge $i  [$tags]$mark"
+        tag_str=""
+        [[ -n "$tags" ]] && tag_str="  [$tags]"
+        echo "  $i. Challenge $i${tag_str}$mark"
     done
     echo ""
     echo "  0. Exit"
