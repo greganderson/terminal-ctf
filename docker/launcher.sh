@@ -21,20 +21,24 @@ try:
                 with open(id_file) as f2:
                     data = json.loads(f2.read().strip())
                     cats = ', '.join(data.get('categories', []))
-                    uuid_map[data['uuid']] = (entry.path, cats)
+                    name = data.get('title', entry.name)
+                    uuid_map[data['uuid']] = (entry.path, cats, name)
     for uid in order:
         if uid in uuid_map:
-            path, cats = uuid_map[uid]
-            print(f'{cats}|{path}')
+            path, cats, name = uuid_map[uid]
+            print(f'{cats}|{path}|{name}')
 except Exception as e:
     print(str(e), file=sys.stderr)
 ")
 
 challenge_dirs=()
 challenge_tags=()
+challenge_names=()
 for entry in "${challenge_entries[@]}"; do
-    challenge_tags+=("${entry%%|*}")
-    challenge_dirs+=("${entry#*|}")
+    IFS='|' read -r tags path name <<< "$entry"
+    challenge_tags+=("$tags")
+    challenge_dirs+=("$path")
+    challenge_names+=("$name")
 done
 
 if [[ ${#challenge_dirs[@]} -eq 0 ]]; then
@@ -64,11 +68,12 @@ while true; do
     for i in $(seq 1 "$n_challenges"); do
         mark=""
         tags="${challenge_tags[$((i-1))]}"
+        display_name="${challenge_names[$((i-1))]}"
         challenge_name="$(basename "${challenge_dirs[$((i-1))]}")"
         [[ -f "$COMPLETED_FILE" ]] && /usr/bin/grep -Fxq "$challenge_name" "$COMPLETED_FILE" && mark=" ✓"
         tag_str=""
         [[ -n "$tags" ]] && tag_str="  [$tags]"
-        echo "  $i. Challenge $i${tag_str}$mark"
+        echo "  $i. ${display_name}${tag_str}$mark"
     done
     echo ""
     echo "  0. Exit"

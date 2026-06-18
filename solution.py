@@ -31,11 +31,20 @@ def load_ordered_challenges() -> list[tuple[int, Path]]:
     return result
 
 
+def get_challenge_name(path: Path) -> str:
+    id_file = path / ".id"
+    if id_file.exists():
+        data = json.loads(id_file.read_text())
+        if "title" in data:
+            return data["title"]
+    return path.name
+
+
 def get_challenge_input(challenges: list[tuple[int, Path]]) -> Path:
     while True:
         print("Which challenge are you checking:\n")
         for num, path in challenges:
-            print(f"{num}. {path.name}")
+            print(f"{num}. {get_challenge_name(path)}")
         print()
         try:
             choice = int(input("=> "))
